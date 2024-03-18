@@ -1,0 +1,83 @@
+.card-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.card-image {
+  height: 0;
+  padding-bottom: 60%;
+  /* background-color: lightgray; */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+.card-desc {
+  flex: 1 1 auto;
+  padding: 1em;
+  background: white;
+}
+.cardText {
+  font-size: 13px;
+}
+.moreBtn {
+  background-color: #f55145;
+  border-color: #f44336 !important;
+  color: #fff;
+}
+.clipBtn {
+  background-color: #414c57;
+  border-color: #3a444e !important;
+  color: #fff;
+  margin-left: 5px;
+}
+.btn {
+  cursor: pointer;
+  color: inherit;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 1.475;
+  vertical-align: middle;
+  transition: all 0.25s;
+  color: white;
+}
+.btnIcon {
+  color: white;
+  font-size: 20px;
+  padding-right: 5px;
+}
+.commentStyle {
+  text-align: left;
+  margin-left: 5%;
+  margin-bottom: 10px;
+}
+.erText {
+  text-decoration: none;
+  color: black;
+}
+.linkColor {
+  color: white;
+  text-decoration: none;
+}
+.moreBtn:hover .btnIcon,
+.moreBtn:hover .linkColor {
+  color: black;
+}
+.clipBtn:hover .btnIcon,
+.clipBtn:hover {
+  color: black;
+}
+
+/* 반응형 */
+
+@media (max-width: 768px) {
+  .col-sm-7 {
+    flex: 0 0 auto;
+    width: 90%;
+  }
+}

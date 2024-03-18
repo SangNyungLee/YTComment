@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+/* 왼쪽 사이드 스크롤바 지우기 */
+.mainSide::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
+}
+.myContainer {
+  /* margin: 0% 3% 0% 3%; */
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  width: 100%;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  /* font-family: 'Open Sans'; */
+  font-family: "Pretendard-Regular";
+  font-weight: 100;
+}
+.btnLogin {
+  width: 100%;
+}
+.loginCheckbox {
+  padding-left: 3px;
+}
+.signup {
+  padding-left: 8px;
+}
+.autoSign {
+  color: white;
+}
+@media (max-width: 991px) {
+  .myContainer {
+    /* margin: 0% 3% 0% 3%; */
+    display: grid;
+    grid-template-columns: 0% 100%;
+    width: 100%;
+  }
+}

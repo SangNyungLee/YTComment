@@ -1,0 +1,63 @@
+.bg-light {
+  background-color: white !important;
+}
+.navbar-brand {
+  margin-left: 10px;
+}
+.navbar-collapse {
+  /* display: flex; */
+  text-align: center;
+  justify-content: space-evenly;
+}
+.navUnderline {
+  border: 1px solid rgb(223, 223, 223);
+  margin-bottom: 10px;
+}
+.navbar-toggler {
+  border: 0px;
+  color: white;
+}
+.mainNavBar {
+  position: fixed;
+  width: 100%;
+  z-index: 98;
+  border-bottom: 1px solid rgb(224, 224, 224);
+}
+
+.navFlex {
+  justify-content: space-between;
+}
+/* 줄어들었을 때 할거 */
+/* 991보다 작아졌을 때 반응형임 */
+@media (max-width: 991px) {
+  .navborder {
+    border-bottom: 1px solid rgb(223, 223, 223);
+  }
+  .goHome {
+    margin-left: 30px;
+  }
+  .mainNavBar {
+    position: fixed;
+    width: 100%;
+    z-index: 98;
+    border-bottom: 1px solid rgb(224, 224, 224);
+  }
+  .mr-auto {
+    display: none;
+  }
+}
+.ml-auto > a {
+  margin-left: 30px;
+}
+.mr-auto {
+  margin-right: 60px;
+}
+.navFlex .nav-item .nav-link.active {
+  color: red; /* 원하는 색상으로 변경하세요 */
+  /* 다른 스타일도 여기에 추가할 수 있습니다 */
+}
+.searchIcons {
+  margin-left: 10px;
+  margin-bottom: 6px;
+  font-size: 20px;
+}

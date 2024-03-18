@@ -1,0 +1,50 @@
+.mom {
+  height: 100%;
+  padding-top: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login {
+  width: 400px;
+  border: 1px solid #ddd;
+}
+.loginForm {
+  padding: 0 50px;
+  display: flex;
+  justify-content: center;
+}
+.formTag > * {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+.dddd {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+.formTag > input {
+  border: 1px solid #ccc;
+}
+.loginSNS {
+  text-align: left;
+  font-weight: bold;
+  color: #777;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+.socialLogin {
+  padding: 0 40px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+.socialLogin > button {
+  height: 40px !important;
+  padding: 0px 10px !important;
+  margin-bottom: 10px !important;
+}
+.fbButton {
+  padding-bottom: 10px;
+}

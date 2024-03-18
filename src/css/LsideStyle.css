@@ -1,0 +1,72 @@
+.mainSide {
+  background-color: #c02929;
+  height: 100vh;
+  position: fixed;
+  width: 220px;
+  overflow: auto;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+li {
+  list-style: none;
+}
+.title {
+  height: 59px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.commentLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.myLogo {
+  font-size: 30px;
+  margin-right: 10px;
+}
+
+.additionalText {
+  font-size: 20px;
+  color: white;
+}
+
+.commentLogo > svg {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.idInput {
+  width: 95%;
+  margin-left: 3px;
+  height: 33px;
+  font-size: 13px;
+  border-radius: 3px;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  margin-bottom: 5px;
+}
+.btnLogin {
+  background-color: #d32f2f;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 1.475;
+  vertical-align: middle;
+  transition: all 0.25s;
+  border: 1px;
+}
+.autoLogin {
+}
+.signup {
+}
+.autoSign {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

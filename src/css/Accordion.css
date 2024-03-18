@@ -1,0 +1,30 @@
+.accordion-button {
+  background-color: #c02929;
+  border: none;
+  color: white;
+}
+.accordion-button,
+.accordion-item {
+  border-width: var(--bs-accordion-border-width);
+  border-style: none; /* 원하는 테두리 스타일 설정 (예: solid, dashed, dotted 등) */
+  background-color: #c0292973;
+  color: white;
+}
+.accordion-button:focus {
+  border-color: black;
+  background-color: #c02929;
+  color: white;
+}
+.accordion-button:not(.collapsed) {
+  color: white;
+  background-color: #c02929;
+  box-shadow: #c02929c9;
+}
+.accordion-body > li {
+  padding-top: 10px;
+  cursor: pointer;
+}
+.accordionIcon {
+  padding-right: 8px;
+  font-size: 20px;
+}
