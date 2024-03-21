@@ -43,6 +43,7 @@ export default function Main() {
           },
         }
       );
+      console.log("유튜브 목록", res);
       //댓글 불러오기
       const newVideos = res.data.items;
       if (categoryNumber === null || categoryNumber !== newCategory) {

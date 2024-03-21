@@ -27,7 +27,6 @@ const Sidebar = ({ width = 220 }) => {
       await setOpen(false);
     }
   };
-
   useEffect(() => {
     window.addEventListener("click", handleClose);
     return () => {

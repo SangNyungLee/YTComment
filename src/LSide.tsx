@@ -11,6 +11,7 @@ export default function Lside() {
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
   };
+
   return (
     <div className="mainSide">
       <div className="title">
