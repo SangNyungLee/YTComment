@@ -15,17 +15,19 @@ import { fetchComments } from "./func/GetApi";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ClipIcons from "./ClipIcons";
+import axios from "axios";
 export default function Page() {
   //모달부분
   const [show, setShow] = useState(false);
+  const [channelCommentCount, setChannelCommentCount] = useState(0);
+  const [channelViewCount, setChannelViewCount] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  //
   const location = useLocation();
   const recData = location.state.data;
   console.log("받은데이터", recData);
-  // console.log("태그", recData.snippet.tags);
   const [comment, setComment] = useState([]);
+
   //원래 시간으로 돌려주는 함수
   function formatPublishedAt(publishedAt: any) {
     const date = new Date(publishedAt);
@@ -46,47 +48,59 @@ export default function Page() {
   const getUrl = (e: any) => {
     console.log("링크는", e);
   };
+
   useEffect(() => {
-    fetchComments(recData.id, 10, "")
-      .then((res) => {
-        const newComments = res.items.map((ment: any) => {
-          return {
-            authorName: ment.snippet.topLevelComment.snippet.authorDisplayName,
-            text: ment.snippet.topLevelComment.snippet.textOriginal,
-            like: ment.snippet.topLevelComment.snippet.likeCount,
-            time: formatPublishedAt(
-              ment.snippet.topLevelComment.snippet.publishedAt
-            ),
-            imgUrl: ment.snippet.topLevelComment.snippet.authorProfileImageUrl,
-          };
+    let channelCommentCount;
+    let channelViewCount;
+    try {
+      axios
+        .post("http://localhost:8000/getCount", { id: recData.videoId })
+        .then((res) => {
+          console.log("res값!!!!", res.data[0]);
+          channelCommentCount = res.data[0].channelCommentCount;
+          channelViewCount = res.data[0].channelViewCount;
+          setChannelCommentCount(channelCommentCount);
+          setChannelViewCount(channelViewCount);
         });
-        setComment(newComments);
-      })
-      .catch((error) => {
-        console.log("에러", error);
-      });
+      axios
+        .post("http://localhost:8000/getComments", { id: recData.videoId })
+        .then((res) => {
+          console.log("받아온 값은?", res);
+          const newComments = res.data.map((ment: any) => {
+            return {
+              authorName: ment.authorName,
+              text: ment.textOriginal,
+              like: ment.likeCount,
+              time: formatPublishedAt(ment.publishedAt),
+              imgUrl: ment.authorProfileImageUrl,
+            };
+          });
+          setComment(newComments);
+        });
+    } catch (error) {
+      console.error("댓글 불러오기 오류");
+    }
   }, []);
 
   return (
     <>
       <header>
         <h3 className="headTitle">
-          {/* <span>[{recData.snippet.categoryId}]</span> */}
+          {/* <span>[{recData.categoryId}]</span> */}
           <span className="chaennelTitle">{recData.title}</span>
         </h3>
       </header>
       <section>
-        {/* <h2>{recData.snippet.localized.description}</h2> */}
         <div className="profile_info">
           <span className="channelName">{recData.channelTitle}</span>
           <span className="channelComments">
-            댓글 : {recData.statistics.commentCount}개{" "}
+            댓글 : {channelCommentCount}개{" "}
           </span>
           <span className="channelViews">
-            조회수 : {formatNumber(recData.statistics.viewCount)}{" "}
+            조회수 : {formatNumber(channelViewCount)}{" "}
           </span>
           <span className="channelUploadDate">
-            {formatPublishedAt(recData.snippet.publishedAt)}
+            {formatPublishedAt(recData.publishedAt)}
           </span>
         </div>
       </section>
@@ -95,12 +109,12 @@ export default function Page() {
           <iframe
             className="goVideo"
             title={`recData.snippet.channelTitle`}
-            src={`https://www.youtube.com/embed/${recData.id}`}
+            src={`https://www.youtube.com/embed/${recData.videoId}`}
           ></iframe>
         </div>
         <div className="moreInfo">
           <a
-            href={`https://www.youtube.com/watch?v=${recData.id}`}
+            href={`https://www.youtube.com/watch?v=${recData.videoId}`}
             className="btn youtubeBtn"
           >
             유튜브에서 보기
@@ -121,9 +135,18 @@ export default function Page() {
           <span className="btn youtubeChannelClip">채널 스크랩</span>
         </div>
         <ClipIcons />
-        <div className="youtubeDescription">{recData.description}</div>
+        <div className="youtubeDescription">
+          {recData.description.split("\\n").map((line: String) => {
+            return (
+              <>
+                {line}
+                <br />
+              </>
+            );
+          })}
+        </div>
         <br />
-        <div className="hashTags">
+        {/* <div className="hashTags">
           {recData.snippet.tags
             ? recData.snippet.tags.map((res: any) => (
                 <span className="tags btn" id={res}>
@@ -131,7 +154,7 @@ export default function Page() {
                 </span>
               ))
             : null}
-        </div>
+        </div> */}
         <div className="vote">
           <span className="positiveBtn">
             <BsFillHandThumbsUpFill />

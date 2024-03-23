@@ -20,18 +20,19 @@ async function testQuery() {
 // 댓글 db에 저장
 async function saveComments(data: any) {
   for (const item of data) {
-    const commentInfo = await fetchComments(item.id, 2, "");
+    const commentInfo = await fetchComments(item.id, 10, "");
     for (const comment of commentInfo.items) {
       const comments = comment.snippet.topLevelComment.snippet;
       await conn.query(
-        `INSERT INTO comment(videoId, likeCount, textOriginal, authorName, authorProfileImageUrl)
-      VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO comment(videoId, likeCount, textOriginal, authorName, authorProfileImageUrl, publishedAt)
+      VALUES (?, ?, ?, ?, ?, ?)`,
         [
           item.id,
           comments.likeCount,
           comments.textOriginal,
-          comments.authorName,
+          comments.authorDisplayName,
           comments.authorProfileImageUrl,
+          comments.publishedAt,
         ]
       );
     }
@@ -53,7 +54,7 @@ async function saveVideos(data: any) {
         item.snippet.channelTitle,
         item.snippet.title,
         desString,
-        item.snippet.thumbnails.default.url,
+        item.snippet.thumbnails.standard.url,
         item.snippet.channelId,
         tagString,
         item.snippet.categoryId,
@@ -61,7 +62,7 @@ async function saveVideos(data: any) {
       ]
     );
     await conn.query(
-      `INSERT INTO statistics (id, viewCount, favoriteCount, commentCount, likeCount)
+      `INSERT INTO statistics (id, channelViewCount, channelFavoriteCount, channelCommentCount, channelLikeCount)
       VALUES (?, ?, ?, ?, ?)
       `,
       [
@@ -91,4 +92,35 @@ async function getTrendingVideos() {
   return rows;
 }
 
-export default { conn, testQuery, saveVideos, getTrendingVideos, saveComments };
+// Page에 Comment값이랑 statistics 조인해서 보내주는 쿼리
+async function getComments(id: string) {
+  try {
+    const [rows, fields] = await conn.query(
+      `SELECT * FROM comment where videoId = "${id}"
+      `
+    );
+    return rows;
+  } catch (error) {
+    console.log("Comment 값 오류", error);
+  }
+}
+
+async function getCount(id: String) {
+  try {
+    const [rows, fields] = await conn.query(
+      `SELECT * FROM statistics where id = "${id}"`
+    );
+    return rows;
+  } catch (error) {
+    console.error("statistics값 받아오기 오류", error);
+  }
+}
+export default {
+  conn,
+  testQuery,
+  saveVideos,
+  getTrendingVideos,
+  saveComments,
+  getComments,
+  getCount,
+};

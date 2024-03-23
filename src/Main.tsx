@@ -40,20 +40,9 @@ export default function Main() {
     fetchVideos("");
   }, [newCategory]);
 
+  // video 목록 받은거 업데이트 하는 부분
   useEffect(() => {
     console.log("업데이트된 목록!!", videos);
-    async function fetchCommentsForVideos() {
-      // const comments = [];
-      // for (const video of videos) {
-      //   const videoId = video.id;
-      //   const commentInfo = await fetchComments(videoId, 1, "");
-      //   comments[videoId] = commentInfo;
-      // }
-      // setCommentData(comments);
-    }
-    // if (videos.length > 0) {
-    //   fetchCommentsForVideos();
-    // }
   }, [videos]);
 
   // 스크롤 이벤트
@@ -118,39 +107,34 @@ export default function Main() {
                         );
                       })}
                   </div>
-
-                  {commentData[video.id] && (
+                  <div>
                     <div>
-                      <div>
-                        {commentData[video.id].items.map((comment: any) => (
-                          <div key={comment.id}>
-                            <div className="commentStyle">
-                              <div style={{ marginBottom: "5px" }}>
-                                <span style={{ marginRight: "3px" }}>👍</span>
-                                {video.likeCount}
-                              </div>{" "}
-                              {video.textOriginal}
-                            </div>
-                          </div>
-                        ))}
-
-                        <button className="btn moreBtn">
-                          <BsYoutube className="btnIcon" />
-                          <Link
-                            to="/page"
-                            state={{ data: video }}
-                            className="linkColor"
-                          >
-                            더보기
-                          </Link>
-                        </button>
-                        <button className="btn clipBtn">
-                          <BsFillPinFill className="btnIcon" />
-                          스크랩
-                        </button>
+                      <div key={video.id}>
+                        <div className="commentStyle">
+                          <div style={{ marginBottom: "5px" }}>
+                            <span style={{ marginRight: "3px" }}>👍</span>
+                            {video.likeCount}
+                          </div>{" "}
+                          {video.textOriginal}
+                        </div>
                       </div>
+
+                      <button className="btn moreBtn">
+                        <BsYoutube className="btnIcon" />
+                        <Link
+                          to="/page"
+                          state={{ data: video }}
+                          className="linkColor"
+                        >
+                          더보기
+                        </Link>
+                      </button>
+                      <button className="btn clipBtn">
+                        <BsFillPinFill className="btnIcon" />
+                        스크랩
+                      </button>
                     </div>
-                  )}
+                  </div>
                 </Card.Body>
               </Link>
             </Card>

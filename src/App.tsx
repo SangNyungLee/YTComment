@@ -5,6 +5,10 @@ import NavBar from "./NavBar";
 import Lside from "./LSide";
 import Sidebar from "./SideBar";
 import { Nav } from "react-bootstrap";
+import "@fontsource/open-sans"; // Defaults to weight 400
+import "@fontsource/open-sans"; // Defaults to weight 400
+import "@fontsource/open-sans/400.css"; // Specify weight
+import "@fontsource/open-sans/400-italic.css"; // Specify weight and style
 import Main from "./Main";
 import Search from "./Search";
 import Page from "./Page";

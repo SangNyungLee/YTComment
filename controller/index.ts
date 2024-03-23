@@ -33,7 +33,7 @@ const getVideos = async (req: Request, res: Response) => {
           key: apiKey,
           part: "snippet, statistics",
           chart: "mostPopular",
-          maxResults: 1,
+          maxResults: 10,
           videoCategoryId: 0,
           regionCode: "KR",
           pageToken: "",
@@ -57,11 +57,20 @@ const trend = async (req: Request, res: Response) => {
   }
 };
 
-// const videoComment = async(req:Request, res:Response) => {
-//   try {
-//     await Model.videoComments();
-//   } catch (error) {
-
-//   }
-// }
-export default { main, test, getVideos, trend };
+const getComments = async (req: Request, res: Response) => {
+  try {
+    const result = await Model.getComments(req.body.id);
+    res.send(result);
+  } catch (error) {
+    console.error("댓글 받아오기 오류", error);
+  }
+};
+const getCount = async (req: Request, res: Response) => {
+  try {
+    const result = await Model.getCount(req.body.id);
+    res.send(result);
+  } catch (error) {
+    console.error("count 받아오기 오류", error);
+  }
+};
+export default { main, test, getVideos, trend, getComments, getCount };
