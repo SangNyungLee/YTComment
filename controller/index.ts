@@ -2,6 +2,7 @@ import Model from "../model/index";
 import axios from "axios";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
+import { fetchComments } from "../src/func/GetApi";
 dotenv.config();
 const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
 const main = async (req: Request, res: Response) => {
@@ -32,14 +33,15 @@ const getVideos = async (req: Request, res: Response) => {
           key: apiKey,
           part: "snippet, statistics",
           chart: "mostPopular",
-          maxResults: 50,
+          maxResults: 1,
           videoCategoryId: 0,
           regionCode: "KR",
           pageToken: "",
         },
       }
     );
-    const saveResult = await Model.saveVideos(result.data.items);
+    await Model.saveVideos(result.data.items);
+    await Model.saveComments(result.data.items);
     res.send("Success");
   } catch (error) {
     console.error("에러입니다.", error);
@@ -50,6 +52,16 @@ const trend = async (req: Request, res: Response) => {
   try {
     const result = await Model.getTrendingVideos();
     res.send(result);
-  } catch (error) {}
+  } catch (error) {
+    console.error("불러오기오류", error);
+  }
 };
+
+// const videoComment = async(req:Request, res:Response) => {
+//   try {
+//     await Model.videoComments();
+//   } catch (error) {
+
+//   }
+// }
 export default { main, test, getVideos, trend };

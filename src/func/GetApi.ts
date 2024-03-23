@@ -21,7 +21,6 @@ const fetchComments = async (
         },
       }
     );
-    console.log("댓글목록임");
     return res.data;
   } catch (error) {
     console.log("댓글오류", error);

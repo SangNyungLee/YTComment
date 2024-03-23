@@ -72,15 +72,13 @@ export default function Page() {
       <header>
         <h3 className="headTitle">
           {/* <span>[{recData.snippet.categoryId}]</span> */}
-          <span className="chaennelTitle">
-            {recData.snippet.localized.title}
-          </span>
+          <span className="chaennelTitle">{recData.title}</span>
         </h3>
       </header>
       <section>
         {/* <h2>{recData.snippet.localized.description}</h2> */}
         <div className="profile_info">
-          <span className="channelName">{recData.snippet.channelTitle}</span>
+          <span className="channelName">{recData.channelTitle}</span>
           <span className="channelComments">
             댓글 : {recData.statistics.commentCount}개{" "}
           </span>
@@ -109,7 +107,7 @@ export default function Page() {
           </a>
           <a
             className="btn youtubeInfo"
-            href={`https://www.youtube.com/channel/${recData.snippet.channelId}`}
+            href={`https://www.youtube.com/channel/${recData.channelId}`}
           >
             유튜브 채널 정보
           </a>
@@ -123,7 +121,7 @@ export default function Page() {
           <span className="btn youtubeChannelClip">채널 스크랩</span>
         </div>
         <ClipIcons />
-        <div className="youtubeDescription">{recData.snippet.description}</div>
+        <div className="youtubeDescription">{recData.description}</div>
         <br />
         <div className="hashTags">
           {recData.snippet.tags

@@ -18,7 +18,7 @@ const myCategoryState = createSlice({
       state.category = 20;
     },
     movie(state) {
-      state.category = 24;
+      state.category = 20;
     },
   },
 });

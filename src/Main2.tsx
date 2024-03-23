@@ -16,6 +16,8 @@ export default function Main() {
   const [loading, setLoading] = useState(false);
   const [pageToken, setPageToken] = useState("");
   const [commentData, setCommentData] = useState<any>({});
+  const [comments, setComments] = useState([]);
+  const [nextCommentPageToken, setNextCommentPageToken] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [categoryNumber, setCategoryNumber] = useState<number | null>(null);
   const newCategory = useSelector(
@@ -25,9 +27,32 @@ export default function Main() {
   const fetchVideos = async (token: string) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/trending");
-      const newVideos = res.data;
-      setVideos([...newVideos]);
+      setVideos([]);
+
+      const res = await axios.get(
+        "https://www.googleapis.com/youtube/v3/videos",
+        {
+          params: {
+            key: apiKey,
+            part: "snippet, statistics",
+            chart: "mostPopular",
+            maxResults: 10,
+            videoCategoryId: newCategory,
+            regionCode: "KR",
+            pageToken: token,
+          },
+        }
+      );
+      console.log("유튜브 목록", res);
+      //댓글 불러오기
+      const newVideos = res.data.items;
+      if (categoryNumber === null || categoryNumber !== newCategory) {
+        setCategoryNumber(newCategory);
+        setVideos([...newVideos]);
+      } else {
+        setVideos([...videos, ...newVideos]);
+      }
+      setPageToken(res.data.nextPageToken);
     } catch (error) {
       if (error instanceof Error) {
         console.error("에러입니다.", error);
@@ -41,19 +66,18 @@ export default function Main() {
   }, [newCategory]);
 
   useEffect(() => {
-    console.log("업데이트된 목록!!", videos);
     async function fetchCommentsForVideos() {
-      // const comments = [];
-      // for (const video of videos) {
-      //   const videoId = video.id;
-      //   const commentInfo = await fetchComments(videoId, 1, "");
-      //   comments[videoId] = commentInfo;
-      // }
-      // setCommentData(comments);
+      const comments = [];
+      for (const video of videos) {
+        const videoId = video.id;
+        const commentInfo = await fetchComments(videoId, 1, "");
+        comments[videoId] = commentInfo;
+      }
+      setCommentData(comments);
     }
-    // if (videos.length > 0) {
-    //   fetchCommentsForVideos();
-    // }
+    if (videos.length > 0) {
+      fetchCommentsForVideos();
+    }
   }, [videos]);
 
   // 스크롤 이벤트
@@ -91,32 +115,19 @@ export default function Main() {
                 <>
                   <Card.Img
                     variant="top"
-                    src={video.thumbnails}
+                    src={video.snippet.thumbnails.standard.url}
                     onClick={() => setSelectedVideo(video.id)}
                   />
                 </>
               )}
               <Link to="/page" state={{ data: video }} className="erText">
                 <Card.Body>
-                  <Card.Title>{video.channelTitle}</Card.Title>
-                  <Card.Text className="cardText">{video.title}</Card.Text>
-                  <div
-                    style={{
-                      color: "gray",
-                      marginBottom: "10px",
-                      whiteSpace: "pre-line",
-                    }}
-                  >
-                    {truncateText(video.description)
-                      .split("\\n")
-                      .map((line) => {
-                        return (
-                          <>
-                            {line}
-                            <br />
-                          </>
-                        );
-                      })}
+                  <Card.Title>{video.snippet.channelTitle}</Card.Title>
+                  <Card.Text className="cardText">
+                    {video.snippet.title}
+                  </Card.Text>
+                  <div style={{ color: "gray", marginBottom: "10px" }}>
+                    {truncateText(video.snippet.description)}
                   </div>
 
                   {commentData[video.id] && (
@@ -127,9 +138,15 @@ export default function Main() {
                             <div className="commentStyle">
                               <div style={{ marginBottom: "5px" }}>
                                 <span style={{ marginRight: "3px" }}>👍</span>
-                                {video.likeCount}
+                                {
+                                  comment.snippet.topLevelComment.snippet
+                                    .likeCount
+                                }
                               </div>{" "}
-                              {video.textOriginal}
+                              {
+                                comment.snippet.topLevelComment.snippet
+                                  .textOriginal
+                              }
                             </div>
                           </div>
                         ))}

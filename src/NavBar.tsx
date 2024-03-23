@@ -56,7 +56,9 @@ function NavBar() {
             <Nav.Link onClick={GAME} className="navborder">
               게임
             </Nav.Link>
-            <Nav.Link onClick={MOVIE}>영화</Nav.Link>
+            <Nav.Link onClick={MOVIE} className="navborder">
+              영화
+            </Nav.Link>
           </Nav>
           <Nav className="mr-auto">
             <Nav.Link>
