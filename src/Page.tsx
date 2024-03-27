@@ -28,6 +28,9 @@ export default function Page() {
   console.log("받은데이터", recData);
   const [comment, setComment] = useState([]);
 
+  const tagsArray = recData.tags
+    .match(/"([^"]*)"/g)
+    .map((tag: string) => tag.replace(/"/g, ""));
   //원래 시간으로 돌려주는 함수
   function formatPublishedAt(publishedAt: any) {
     const date = new Date(publishedAt);
@@ -146,15 +149,15 @@ export default function Page() {
           })}
         </div>
         <br />
-        {/* <div className="hashTags">
-          {recData.snippet.tags
-            ? recData.snippet.tags.map((res: any) => (
+        <div className="hashTags">
+          {recData.tags
+            ? tagsArray.map((res: any) => (
                 <span className="tags btn" id={res}>
                   #{res}
                 </span>
               ))
             : null}
-        </div> */}
+        </div>
         <div className="vote">
           <span className="positiveBtn">
             <BsFillHandThumbsUpFill />

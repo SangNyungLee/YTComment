@@ -33,7 +33,7 @@ const getVideos = async (req: Request, res: Response) => {
           key: apiKey,
           part: "snippet, statistics",
           chart: "mostPopular",
-          maxResults: 10,
+          maxResults: 12,
           videoCategoryId: 0,
           regionCode: "KR",
           pageToken: "",

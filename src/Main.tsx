@@ -115,7 +115,7 @@ export default function Main() {
                             <span style={{ marginRight: "3px" }}>👍</span>
                             {video.likeCount}
                           </div>{" "}
-                          {video.textOriginal}
+                          {truncateText(video.textOriginal)}
                         </div>
                       </div>
 
