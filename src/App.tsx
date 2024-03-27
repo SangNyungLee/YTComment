@@ -13,6 +13,7 @@ import Main from "./Main";
 import Search from "./Search";
 import Page from "./Page";
 import Signup from "./Signup";
+import SignupForm from "./SignupForm";
 
 function App() {
   // 초기 상태를 window.innerWidth로 설정
@@ -46,6 +47,7 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/page" element={<Page />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/signupForm" element={<SignupForm />} />
           </Routes>
         </div>
       </BrowserRouter>
