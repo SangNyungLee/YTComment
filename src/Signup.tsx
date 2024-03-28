@@ -1,12 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import "./css/Signup.css";
+import axios from "axios";
 import {
   FacebookLoginButton,
+  GithubLoginButton,
   GoogleLoginButton,
-  InstagramLoginButton,
 } from "react-social-login-buttons";
 import { Link } from "react-router-dom";
+import SocialKaKao from "./func/SocialLogin";
+import { getCookie } from "./func/GetApi";
+
 function Signup() {
+  const [userId, SetUserId] = useState("");
+  const [userPw, setUserPw] = useState("");
+
+  const getLogin = async () => {
+    const result: any = await axios.post("http://localhost:8000/login", {
+      userId,
+      userPw,
+    });
+    if (result === "fail") {
+      alert("아이디와 비밀번호를 확인해주세요");
+      SetUserId("");
+      setUserPw("");
+    } else {
+      alert("로그인에 성공하셨습니다.!");
+      getCookie(result);
+    }
+  };
   return (
     <div className="mom">
       <div className="login">
@@ -21,11 +42,27 @@ function Signup() {
         </div>
         <div className="loginForm">
           <form className="formTag">
-            <input type="text" placeholder="아이디" />
-            <input type="text" placeholder="비밀번호" />
+            <input
+              type="text"
+              className={userId}
+              placeholder="아이디"
+              onChange={(e) => {
+                SetUserId(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              className={userPw}
+              placeholder="비밀번호"
+              onChange={(e) => {
+                setUserPw(e.target.value);
+              }}
+            />
             <button
+              type="button"
               style={{ color: "white", backgroundColor: "#D32F2F" }}
               className="btn loginBtn"
+              onClick={getLogin}
             >
               로그인
             </button>
@@ -54,7 +91,8 @@ function Signup() {
           <span className="loginSNS">SNS 계정으로 로그인</span>
           <FacebookLoginButton className="fbButton" />
           <GoogleLoginButton />
-          <InstagramLoginButton />
+          <GithubLoginButton />
+          <SocialKaKao />
         </div>
       </div>
     </div>

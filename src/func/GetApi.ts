@@ -1,6 +1,6 @@
 import axios from "axios";
+// import jwt from "jsonwebtoken";
 const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
-
 //댓글 가져오기
 const fetchComments = async (
   videoId: string,
@@ -60,5 +60,13 @@ function truncateText(text: string) {
     return sliceText;
   }
 }
-
-export { fetchComments, truncateText, searchYoutubeVideos };
+function getCookie(data: any) {
+  const token = data.data;
+  // 만료날짜 설정
+  const expires = new Date();
+  expires.setTime(expires.getTime() + 2 * 60 * 60 * 1000);
+  // 쿠키 설정 (path 설정 = 쿠키가 적용되는 경로지정)
+  document.cookie = `token = ${token}; expires=${expires.toUTCString()} path=/`;
+  window.location.href = "/";
+}
+export { fetchComments, truncateText, searchYoutubeVideos, getCookie };

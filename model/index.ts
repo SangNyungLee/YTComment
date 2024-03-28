@@ -138,6 +138,40 @@ async function userSignup(data: any) {
     console.error("회원가입쿼리오류", error);
   }
 }
+async function kakao(data: any) {
+  try {
+    // 이미 가입되어 있는 아이디인지 확인
+    const [rows, _]: any = await conn.query(
+      "SELECT * FROM userinfo where userEmail=?",
+      [data.id]
+    );
+    if (rows.length === 0) {
+      // 가입 안되어 있으면 가입 시킴
+      await conn.query(
+        "INSERT INTO userinfo (userEmail, userName, userPw) VALUES(?, ?, ?)",
+        [data.id, data.kakao_account.profile.nickname, "kakaoLogin"]
+      );
+      console.log("가입완료");
+    } else {
+      console.log("이미가입");
+    }
+  } catch (error) {
+    console.log("카카오 로그인 오류", error);
+  }
+}
+
+// 로그인 확인 함수
+async function login(data: any) {
+  try {
+    const [rows, _]: any = await conn.query(
+      "SELECT userEmail, userName FROM userinfo where (userEmail, userPw) = (?, ?)",
+      [data.userId, data.userPw]
+    );
+    return rows;
+  } catch (error) {
+    console.log("로그인 오류", error);
+  }
+}
 export default {
   conn,
   testQuery,
@@ -148,4 +182,6 @@ export default {
   getCount,
   checkUserEmail,
   userSignup,
+  kakao,
+  login,
 };

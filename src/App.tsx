@@ -14,7 +14,6 @@ import Search from "./Search";
 import Page from "./Page";
 import Signup from "./Signup";
 import SignupForm from "./SignupForm";
-
 function App() {
   // 초기 상태를 window.innerWidth로 설정
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);

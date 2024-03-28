@@ -10,4 +10,6 @@ router.post("/getComments", controller.getComments);
 router.post("/getCount", controller.getCount);
 router.post("/checkUserEmail", controller.checkUserEmail); //이메일 중복확인
 router.post("/userSignup", controller.userSignup); //회원가입
+router.post("/auth/kakao", controller.kakao);
+router.post("/login", controller.login);
 export default router;

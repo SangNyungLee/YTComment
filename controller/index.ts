@@ -1,9 +1,8 @@
 import Model from "../model/index";
 import axios from "axios";
 import { Request, Response } from "express";
-import dotenv from "dotenv";
 import { fetchComments } from "../src/func/GetApi";
-dotenv.config();
+import jwt from "jsonwebtoken";
 const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
 const main = async (req: Request, res: Response) => {
   try {
@@ -101,6 +100,58 @@ const userSignup = async (req: Request, res: Response) => {
     console.error("회원가입오류", error);
   }
 };
+const kakao = async (req: Request, res: Response) => {
+  try {
+    console.log("AUTH로 온 값", req.body);
+    const accessToken = req.body.Token;
+    const headers = {
+      Authorization: `bearer ${accessToken}`,
+    };
+
+    // 카카오 API 호출
+    const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers,
+    });
+    // 가입되어 있는지 확인
+    await Model.kakao(result.data);
+    // jsonWebToken 만들어서 보내기
+
+    const user = {
+      id: result.data.id,
+      username: result.data.kakao_account.profile,
+    };
+    const secretKey = "secret"; // 비밀키
+    const expiresIn = "2h"; // 만료시간
+    const token = jwt.sign(user, secretKey, { expiresIn });
+    console.log("JWT 토큰", token);
+    res.send(token);
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+const login = async (req: Request, res: Response) => {
+  try {
+    console.log("로그인", req.body);
+    const result = await Model.login(req.body);
+    console.log("받아온거 결과??", result);
+    if (result.length === 0) {
+      res.send("fail");
+    } else {
+      const user = {
+        id: result[0].userEmail,
+        username: result[0].userName,
+      };
+      const secretKey = "secret"; // 비밀키
+      const expiresIn = "2h"; // 만료시간
+      const token = jwt.sign(user, secretKey, { expiresIn });
+      console.log("JWT 토큰", token);
+      res.send(token);
+    }
+  } catch (error) {
+    console.log("controller 로그인 오류", error);
+  }
+};
+
 export default {
   main,
   test,
@@ -110,4 +161,6 @@ export default {
   getCount,
   checkUserEmail,
   userSignup,
+  kakao,
+  login,
 };
