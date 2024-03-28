@@ -115,6 +115,29 @@ async function getCount(id: String) {
     console.error("statistics값 받아오기 오류", error);
   }
 }
+
+async function checkUserEmail(email: String) {
+  try {
+    const [rows, _] = await conn.query(
+      `SELECT * FROM userinfo where userEmail = ?`,
+      [email]
+    );
+    return rows;
+  } catch (error) {
+    console.error("이메일 오류", error);
+  }
+}
+async function userSignup(data: any) {
+  try {
+    const [rows, _] = await conn.query(
+      "INSERT INTO userinfo (userEmail, userName, userPw) VALUES (?,?,?)",
+      [data.userEmail, data.userName, data.userPw]
+    );
+    return rows;
+  } catch (error) {
+    console.error("회원가입쿼리오류", error);
+  }
+}
 export default {
   conn,
   testQuery,
@@ -123,4 +146,6 @@ export default {
   saveComments,
   getComments,
   getCount,
+  checkUserEmail,
+  userSignup,
 };

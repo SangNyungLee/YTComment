@@ -73,4 +73,41 @@ const getCount = async (req: Request, res: Response) => {
     console.error("count 받아오기 오류", error);
   }
 };
-export default { main, test, getVideos, trend, getComments, getCount };
+
+// 이메일 중복확인
+const checkUserEmail = async (req: Request, res: Response) => {
+  try {
+    const result: any = await Model.checkUserEmail(req.body.userEmail);
+    if (result.length === 0) {
+      res.send("success");
+    } else {
+      res.send("중복된 이메일 입니다.");
+    }
+  } catch (error) {
+    console.error("이메일 에러", error);
+  }
+};
+
+//회원가입
+const userSignup = async (req: Request, res: Response) => {
+  try {
+    const result: any = await Model.userSignup(req.body);
+    if (result) {
+      res.send("success");
+    } else {
+      return "error";
+    }
+  } catch (error) {
+    console.error("회원가입오류", error);
+  }
+};
+export default {
+  main,
+  test,
+  getVideos,
+  trend,
+  getComments,
+  getCount,
+  checkUserEmail,
+  userSignup,
+};

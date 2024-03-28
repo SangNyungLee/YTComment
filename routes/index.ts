@@ -8,4 +8,6 @@ router.get("/getVideos", controller.getVideos); //유튜브 api로 데이터 받
 router.post("/trending", controller.trend); //인기순
 router.post("/getComments", controller.getComments);
 router.post("/getCount", controller.getCount);
+router.post("/checkUserEmail", controller.checkUserEmail); //이메일 중복확인
+router.post("/userSignup", controller.userSignup); //회원가입
 export default router;
