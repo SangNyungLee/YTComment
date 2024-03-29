@@ -24,32 +24,37 @@ const test = async (req: Request, res: Response) => {
 };
 
 const getVideos = async (req: Request, res: Response) => {
-  try {
-    const result = await axios.get(
-      "https://www.googleapis.com/youtube/v3/videos",
-      {
-        params: {
-          key: apiKey,
-          part: "snippet, statistics",
-          chart: "mostPopular",
-          maxResults: 12,
-          videoCategoryId: 0,
-          regionCode: "KR",
-          pageToken: "",
-        },
+  const category = [0, 10]; // 최신, 음악, 게임, 영화 순서임
+  for (const data of category) {
+    try {
+      const result = await axios.get(
+        "https://www.googleapis.com/youtube/v3/videos",
+        {
+          params: {
+            key: apiKey,
+            part: "snippet, statistics",
+            chart: "mostPopular",
+            maxResults: 50,
+            videoCategoryId: data,
+            regionCode: "KR",
+            pageToken: "",
+          },
+        }
+      );
+      if (result.data && result.data.items) {
+        await Model.saveVideos(result.data.items);
+        await Model.saveComments(result.data.items);
       }
-    );
-    await Model.saveVideos(result.data.items);
-    await Model.saveComments(result.data.items);
-    res.send("Success");
-  } catch (error) {
-    console.error("에러입니다.", error);
+      res.send("Success");
+    } catch (error) {
+      console.error("에러입니다.", error);
+    }
   }
 };
 
 const trend = async (req: Request, res: Response) => {
   try {
-    const result = await Model.getTrendingVideos();
+    const result = await Model.getTrendingVideos(req.body.page);
     res.send(result);
   } catch (error) {
     console.error("불러오기오류", error);
@@ -102,7 +107,6 @@ const userSignup = async (req: Request, res: Response) => {
 };
 const kakao = async (req: Request, res: Response) => {
   try {
-    console.log("AUTH로 온 값", req.body);
     const accessToken = req.body.Token;
     const headers = {
       Authorization: `bearer ${accessToken}`,
@@ -123,7 +127,6 @@ const kakao = async (req: Request, res: Response) => {
     const secretKey = "secret"; // 비밀키
     const expiresIn = "2h"; // 만료시간
     const token = jwt.sign(user, secretKey, { expiresIn });
-    console.log("JWT 토큰", token);
     res.send(token);
   } catch (error) {
     console.log("error", error);
@@ -131,9 +134,7 @@ const kakao = async (req: Request, res: Response) => {
 };
 const login = async (req: Request, res: Response) => {
   try {
-    console.log("로그인", req.body);
     const result = await Model.login(req.body);
-    console.log("받아온거 결과??", result);
     if (result.length === 0) {
       res.send("fail");
     } else {
@@ -144,7 +145,6 @@ const login = async (req: Request, res: Response) => {
       const secretKey = "secret"; // 비밀키
       const expiresIn = "2h"; // 만료시간
       const token = jwt.sign(user, secretKey, { expiresIn });
-      console.log("JWT 토큰", token);
       res.send(token);
     }
   } catch (error) {
@@ -155,7 +155,6 @@ const login = async (req: Request, res: Response) => {
 const totalPage = async (req: Request, res: Response) => {
   try {
     const result: any = await Model.totalPage();
-    console.log(result[0].totalNumber);
     res.send({ totalNumber: result[0].totalNumber });
   } catch (error) {
     console.log("totalPage 오류", error);

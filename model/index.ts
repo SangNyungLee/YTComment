@@ -46,7 +46,7 @@ async function saveVideos(data: any) {
     const desString = JSON.stringify(item.snippet.description);
     await conn.query(
       `
-      INSERT INTO channelinfo (id, channelTitle, title, description, thumbnails, channelId, tags, categoryId, publishedAt)
+      INSERT IGNORE INTO channelinfo (id, channelTitle, title, description, thumbnails, channelId, tags, categoryId, publishedAt)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
@@ -62,7 +62,7 @@ async function saveVideos(data: any) {
       ]
     );
     await conn.query(
-      `INSERT INTO statistics (id, channelViewCount, channelFavoriteCount, channelCommentCount, channelLikeCount)
+      `INSERT IGNORE INTO statistics (id, channelViewCount, channelFavoriteCount, channelCommentCount, channelLikeCount)
       VALUES (?, ?, ?, ?, ?)
       `,
       [
@@ -73,7 +73,6 @@ async function saveVideos(data: any) {
         item.statistics.likeCount,
       ]
     );
-    console.log("success");
   }
   try {
   } catch (error) {
@@ -81,14 +80,18 @@ async function saveVideos(data: any) {
   }
 }
 // Trending Video DB에서 꺼내오고, 댓글 중에서 likeCount가 제일 높은 값만 가져오게 JOIN
-async function getTrendingVideos() {
+async function getTrendingVideos(page: number) {
+  const itemsPerPage = 12; // 한 페이지당 12개씩 가져올거임
+  const startIndex = (page - 1) * itemsPerPage; // 페이지당 아이템수 계산해서 시작 인덱스 계산
   const [rows, fields] = await conn.query(`SELECT T1.*, T2.*
   FROM channelinfo AS T1
-  INNER JOIN (
+  LEFT JOIN (
       SELECT *, ROW_NUMBER() OVER (PARTITION BY videoId ORDER BY likeCount DESC) AS row_num
       FROM comment
-  ) AS T2 ON T1.id = T2.videoId
-  WHERE T2.row_num = 1;`);
+  ) AS T2 ON T1.id = T2.videoId AND (T2.row_num = 1 OR T2.row_num IS NULL)
+  LIMIT ${startIndex}, ${itemsPerPage};
+  `);
+  console.log(rows);
   return rows;
 }
 

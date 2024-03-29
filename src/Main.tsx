@@ -22,8 +22,6 @@ export default function Main() {
   const [categoryNumber, setCategoryNumber] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  // const [searchParams] = useSearchParams();
-  // const page = searchParams.get("page");
 
   const newCategory = useSelector(
     (state: RootState) => state.category.category
@@ -32,10 +30,10 @@ export default function Main() {
   const handlePageChange = (page: number) => {
     setPage(page);
   };
-  const fetchVideos = async (token: string) => {
+  const fetchVideos = async (page: number) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/trending");
+      const res = await axios.post("http://localhost:8000/trending", { page });
       const newVideos = res.data;
       setVideos([...newVideos]);
     } catch (error) {
@@ -45,17 +43,18 @@ export default function Main() {
     }
     setLoading(false);
   };
+  // 전체 페이지 개수 가져오는거
+  useEffect(() => {
+    axios.get("http://localhost:8000/totalPage").then((res: any) => {
+      setTotalItems(res.data.totalNumber);
+    });
+  }, []);
 
   // 페이지 변경시
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 이동시 스크롤 위치 제일 위로 초기화
-    axios.get("http://localhost:8000/totalPage").then((res: any) => {
-      setTotalItems(res.data.totalNumber);
-    });
-  }, [page]);
-  useEffect(() => {
-    fetchVideos("");
-  }, [newCategory]);
+    fetchVideos(page);
+  }, [newCategory, page]);
 
   // video 목록 받은거 업데이트 하는 부분
   useEffect(() => {
@@ -63,16 +62,16 @@ export default function Main() {
   }, [videos]);
 
   // 스크롤 이벤트
-  window.onscroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 1
-    ) {
-      if (!loading && pageToken) {
-        fetchVideos(pageToken);
-      }
-    }
-  };
+  // window.onscroll = () => {
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //     document.documentElement.offsetHeight - 1
+  //   ) {
+  //     if (!loading && pageToken) {
+  //       fetchVideos(pageToken);
+  //     }
+  //   }
+  // };
 
   ////////
 
@@ -126,14 +125,16 @@ export default function Main() {
                   </div>
                   <div>
                     <div>
-                      <div key={video.id}>
-                        <div className="commentStyle">
-                          <div style={{ marginBottom: "5px" }}>
-                            <span style={{ marginRight: "3px" }}>👍</span>
-                            {video.likeCount}
-                          </div>{" "}
-                          {truncateText(video.textOriginal)}
-                        </div>
+                      <div key={video.videoId}>
+                        {video.textOriginal && (
+                          <div className="commentStyle">
+                            <div style={{ marginBottom: "5px" }}>
+                              <span style={{ marginRight: "3px" }}>👍</span>
+                              {video.likeCount}
+                            </div>{" "}
+                            {truncateText(video.textOriginal)}
+                          </div>
+                        )}
                       </div>
 
                       <button className="btn moreBtn">
