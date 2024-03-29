@@ -5,10 +5,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/Main.css";
 import Spinner from "react-bootstrap/Spinner";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { BsYoutube, BsFillPinFill } from "react-icons/bs";
 import { fetchComments, truncateText } from "./func/GetApi";
 import { RootState } from "./store";
+import "./css/Pagination.css";
+import Pagination from "react-js-pagination";
 //API키
 export default function Main() {
   const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
@@ -18,10 +20,18 @@ export default function Main() {
   const [commentData, setCommentData] = useState<any>({});
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [categoryNumber, setCategoryNumber] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  // const [searchParams] = useSearchParams();
+  // const page = searchParams.get("page");
+
   const newCategory = useSelector(
     (state: RootState) => state.category.category
   );
 
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
   const fetchVideos = async (token: string) => {
     setLoading(true);
     try {
@@ -36,6 +46,13 @@ export default function Main() {
     setLoading(false);
   };
 
+  // 페이지 변경시
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 이동시 스크롤 위치 제일 위로 초기화
+    axios.get("http://localhost:8000/totalPage").then((res: any) => {
+      setTotalItems(res.data.totalNumber);
+    });
+  }, [page]);
   useEffect(() => {
     fetchVideos("");
   }, [newCategory]);
@@ -143,6 +160,15 @@ export default function Main() {
       </Row>
 
       {loading && <Spinner animation="border" />}
+      <Pagination
+        activePage={page} // 현재 페이지
+        itemsCountPerPage={12} // 한 페이지랑 보여줄 아이템 갯수
+        totalItemsCount={totalItems} // 총 아이템 갯수
+        pageRangeDisplayed={5} // paginator의 페이지 범위
+        prevPageText={"‹"} // "이전"을 나타낼 텍스트
+        nextPageText={"›"} // "다음"을 나타낼 텍스트
+        onChange={handlePageChange} // 페이지 변경을 핸들링하는 함수
+      />
     </div>
   );
 }

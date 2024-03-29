@@ -172,6 +172,17 @@ async function login(data: any) {
     console.log("로그인 오류", error);
   }
 }
+
+const totalPage = async () => {
+  try {
+    const [rows, _] = await conn.query(
+      "SELECT COUNT(*) AS totalNumber FROM channelinfo"
+    );
+    return rows;
+  } catch (error) {
+    console.log("totalPage 오류", error);
+  }
+};
 export default {
   conn,
   testQuery,
@@ -184,4 +195,5 @@ export default {
   userSignup,
   kakao,
   login,
+  totalPage,
 };

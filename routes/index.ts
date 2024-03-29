@@ -12,4 +12,5 @@ router.post("/checkUserEmail", controller.checkUserEmail); //이메일 중복확
 router.post("/userSignup", controller.userSignup); //회원가입
 router.post("/auth/kakao", controller.kakao);
 router.post("/login", controller.login);
+router.get("/totalPage", controller.totalPage);
 export default router;

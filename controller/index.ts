@@ -152,6 +152,15 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
+const totalPage = async (req: Request, res: Response) => {
+  try {
+    const result: any = await Model.totalPage();
+    console.log(result[0].totalNumber);
+    res.send({ totalNumber: result[0].totalNumber });
+  } catch (error) {
+    console.log("totalPage 오류", error);
+  }
+};
 export default {
   main,
   test,
@@ -163,4 +172,5 @@ export default {
   userSignup,
   kakao,
   login,
+  totalPage,
 };
