@@ -17,8 +17,8 @@ const myCategoryState = createSlice({
     game(state) {
       state.category = 20;
     },
-    movie(state) {
-      state.category = 20;
+    animal(state) {
+      state.category = 15;
     },
   },
 });

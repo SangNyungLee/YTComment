@@ -15,7 +15,6 @@ const main = async (req: Request, res: Response) => {
 };
 const test = async (req: Request, res: Response) => {
   try {
-    console.log("받은값", req.body);
     const Queryresult = await Model.testQuery();
     res.send(Queryresult);
   } catch (error) {
@@ -24,7 +23,7 @@ const test = async (req: Request, res: Response) => {
 };
 
 const getVideos = async (req: Request, res: Response) => {
-  const category = [0, 10]; // 최신, 음악, 게임, 영화 순서임
+  const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서임
   for (const data of category) {
     try {
       const result = await axios.get(
@@ -37,7 +36,6 @@ const getVideos = async (req: Request, res: Response) => {
             maxResults: 50,
             videoCategoryId: data,
             regionCode: "KR",
-            pageToken: "",
           },
         }
       );
@@ -54,7 +52,7 @@ const getVideos = async (req: Request, res: Response) => {
 
 const trend = async (req: Request, res: Response) => {
   try {
-    const result = await Model.getTrendingVideos(req.body.page);
+    const result = await Model.getTrendingVideos(req.body);
     res.send(result);
   } catch (error) {
     console.error("불러오기오류", error);

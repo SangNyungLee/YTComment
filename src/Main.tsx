@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, Col, Row, Button } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/Main.css";
 import Spinner from "react-bootstrap/Spinner";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BsYoutube, BsFillPinFill } from "react-icons/bs";
-import { fetchComments, truncateText } from "./func/GetApi";
+import { truncateText } from "./func/GetApi";
 import { RootState } from "./store";
 import "./css/Pagination.css";
 import Pagination from "react-js-pagination";
-//API키
+
 export default function Main() {
-  const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
   const [videos, setVideos] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const [pageToken, setPageToken] = useState("");
-  const [commentData, setCommentData] = useState<any>({});
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [categoryNumber, setCategoryNumber] = useState<number | null>(null);
   const [page, setPage] = useState(1);
@@ -30,10 +27,13 @@ export default function Main() {
   const handlePageChange = (page: number) => {
     setPage(page);
   };
-  const fetchVideos = async (page: number) => {
+  const fetchVideos = async (page: number, newCategory: number) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/trending", { page });
+      const res = await axios.post("http://localhost:8000/trending", {
+        page,
+        newCategory,
+      });
       const newVideos = res.data;
       setVideos([...newVideos]);
     } catch (error) {
@@ -50,16 +50,17 @@ export default function Main() {
     });
   }, []);
 
-  // 페이지 변경시
+  // 페이지 네이션에서 페이지 변경시
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 이동시 스크롤 위치 제일 위로 초기화
-    fetchVideos(page);
+    fetchVideos(page, newCategory);
   }, [newCategory, page]);
 
   // video 목록 받은거 업데이트 하는 부분
-  useEffect(() => {
-    console.log("업데이트된 목록!!", videos);
-  }, [videos]);
+  // useEffect(() => {
+  //   console.log("업데이트된 목록!!", videos);
+  //   console.log("카테고리 번호", newCategory);
+  // }, [videos, newCategory]);
 
   // 스크롤 이벤트
   // window.onscroll = () => {
@@ -77,7 +78,7 @@ export default function Main() {
 
   return (
     <div className="text-center">
-      <h1>인기동영상</h1>
+      {/* <h1>인기동영상</h1> */}
       <Row className="justify-content-center" style={{ width: "100%" }}>
         {videos.map((video: any) => (
           <Col xs={7} sm={7} md={5} lg={4} xl={3} xxl={2} key={video.id}>
@@ -165,7 +166,7 @@ export default function Main() {
         activePage={page} // 현재 페이지
         itemsCountPerPage={12} // 한 페이지랑 보여줄 아이템 갯수
         totalItemsCount={totalItems} // 총 아이템 갯수
-        pageRangeDisplayed={5} // paginator의 페이지 범위
+        pageRangeDisplayed={10} // paginator의 페이지 범위
         prevPageText={"‹"} // "이전"을 나타낼 텍스트
         nextPageText={"›"} // "다음"을 나타낼 텍스트
         onChange={handlePageChange} // 페이지 변경을 핸들링하는 함수

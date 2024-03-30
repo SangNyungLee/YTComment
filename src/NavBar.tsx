@@ -31,8 +31,8 @@ function NavBar() {
   const GAME = () => {
     dispatch(changeCategory.game());
   };
-  const MOVIE = () => {
-    dispatch(changeCategory.movie());
+  const ANIMAL = () => {
+    dispatch(changeCategory.animal());
   };
 
   return (
@@ -56,8 +56,8 @@ function NavBar() {
             <Nav.Link onClick={GAME} className="navborder">
               게임
             </Nav.Link>
-            <Nav.Link onClick={MOVIE} className="navborder">
-              영화
+            <Nav.Link onClick={ANIMAL} className="navborder">
+              동물
             </Nav.Link>
           </Nav>
           <Nav className="mr-auto">

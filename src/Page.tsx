@@ -28,9 +28,12 @@ export default function Page() {
   console.log("받은데이터", recData);
   const [comment, setComment] = useState([]);
 
-  const tagsArray = recData.tags
-    .match(/"([^"]*)"/g)
-    .map((tag: string) => tag.replace(/"/g, ""));
+  let tagsArray = [];
+  if (recData.tags) {
+    tagsArray = recData.tags
+      .match(/"([^"]*)"/g)
+      .map((tag: string) => tag.replace(/"/g, ""));
+  }
   //원래 시간으로 돌려주는 함수
   function formatPublishedAt(publishedAt: any) {
     const date = new Date(publishedAt);
@@ -57,7 +60,7 @@ export default function Page() {
     let channelViewCount;
     try {
       axios
-        .post("http://localhost:8000/getCount", { id: recData.videoId })
+        .post("http://localhost:8000/getCount", { id: recData.id })
         .then((res) => {
           console.log("res값!!!!", res.data[0]);
           channelCommentCount = res.data[0].channelCommentCount;
@@ -66,7 +69,7 @@ export default function Page() {
           setChannelViewCount(channelViewCount);
         });
       axios
-        .post("http://localhost:8000/getComments", { id: recData.videoId })
+        .post("http://localhost:8000/getComments", { id: recData.id })
         .then((res) => {
           console.log("받아온 값은?", res);
           const newComments = res.data.map((ment: any) => {
@@ -112,12 +115,12 @@ export default function Page() {
           <iframe
             className="goVideo"
             title={`recData.snippet.channelTitle`}
-            src={`https://www.youtube.com/embed/${recData.videoId}`}
+            src={`https://www.youtube.com/embed/${recData.id}`}
           ></iframe>
         </div>
         <div className="moreInfo">
           <a
-            href={`https://www.youtube.com/watch?v=${recData.videoId}`}
+            href={`https://www.youtube.com/watch?v=${recData.id}`}
             className="btn youtubeBtn"
           >
             유튜브에서 보기
