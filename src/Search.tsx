@@ -65,6 +65,7 @@ export default function Search() {
       setCommentData(comments);
     }
     if (videos.length > 0) {
+      console.log("videos", videos);
       fetchCommentsForVideos();
     }
   }, [videos]);
@@ -117,7 +118,7 @@ export default function Search() {
                   />
                 </>
               )}
-              <Link to="/page" state={{ data: video }} className="erText">
+              <Link to="/searchPage" state={{ data: video }} className="erText">
                 <Card.Body>
                   <Card.Title>{video.snippet.channelTitle}</Card.Title>
                   <Card.Text className="cardText">
@@ -153,7 +154,7 @@ export default function Search() {
                         <button className="btn moreBtn">
                           <BsYoutube className="btnIcon" />
                           <Link
-                            to="/page"
+                            to="/searchPage"
                             state={{ data: video }}
                             className="linkColor"
                           >

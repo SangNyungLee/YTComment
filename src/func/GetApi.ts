@@ -28,6 +28,27 @@ const fetchComments = async (
   }
 };
 
+// 통계값 가져오기
+const getStatistics = async (videoId: String) => {
+  try {
+    const res = await axios.get(
+      "https://www.googleapis.com/youtube/v3/videos",
+      {
+        params: {
+          key: apiKey,
+          part: "statistics",
+          id: videoId,
+        },
+      }
+    );
+    // 응답 처리
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 //검색어 입력받은거 가져오기
 const searchYoutubeVideos = async (query: string, pageToken: string) => {
   try {
@@ -39,7 +60,7 @@ const searchYoutubeVideos = async (query: string, pageToken: string) => {
           type: "video",
           part: "snippet",
           q: query, //query가 검색부분임
-          maxResults: 10,
+          maxResults: 12,
           pageToken: pageToken,
         },
       }
@@ -69,4 +90,10 @@ function getCookie(data: any) {
   document.cookie = `token = ${token}; expires=${expires.toUTCString()} path=/`;
   window.location.href = "/";
 }
-export { fetchComments, truncateText, searchYoutubeVideos, getCookie };
+export {
+  fetchComments,
+  truncateText,
+  searchYoutubeVideos,
+  getCookie,
+  getStatistics,
+};

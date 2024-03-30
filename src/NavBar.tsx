@@ -2,7 +2,7 @@ import React from "react";
 import { KeyboardEvent, useState } from "react";
 import { Navbar, Nav, NavDropdown, NavLink } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./css/NavBar.css";
 import { changeCategory } from "./store";
 import { searchYoutubeVideos } from "./func/GetApi";
@@ -15,24 +15,29 @@ import {
 function NavBar() {
   const [youtubeSearch, SetYoutubeSearch] = useState("");
   const dispatch = useDispatch();
-
-  const handleKeyDown = async (e: KeyboardEvent) => {
+  const navigate = useNavigate();
+  const handleKeyDown = async (e: any) => {
     if (e.key === "Enter") {
-      SetYoutubeSearch("");
       searchYoutubeVideos(youtubeSearch, " ");
+      navigate("/search", { state: { data: youtubeSearch } });
+      SetYoutubeSearch("");
     }
   };
   const NEW = () => {
     dispatch(changeCategory.recent());
+    navigate("/");
   };
   const MUSIC = () => {
     dispatch(changeCategory.music());
+    navigate("/");
   };
   const GAME = () => {
     dispatch(changeCategory.game());
+    navigate("/");
   };
   const ANIMAL = () => {
     dispatch(changeCategory.animal());
+    navigate("/");
   };
 
   return (

@@ -5,33 +5,31 @@ import {
   BsFillHandThumbsUpFill,
   BsFillHandThumbsDownFill,
   BsHandThumbsUp,
+  BsHandThumbsDown,
   BsPaperclip,
 } from "react-icons/bs";
 //클립보드 복사하기
 import { CopyToClipboard } from "react-copy-to-clipboard/src";
 import { useEffect, useState } from "react";
+import { fetchComments, getStatistics } from "./func/GetApi";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ClipIcons from "./ClipIcons";
-import axios from "axios";
-export default function Page() {
+export default function SearchPage() {
   //모달부분
   const [show, setShow] = useState(false);
-  const [channelCommentCount, setChannelCommentCount] = useState(0);
-  const [channelViewCount, setChannelViewCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [viewCount, setViewCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  //
   const location = useLocation();
   const recData = location.state.data;
+  const myId = recData.id;
   console.log("받은데이터", recData);
+  // console.log("태그", recData.snippet.tags);
   const [comment, setComment] = useState([]);
-
-  let tagsArray = [];
-  if (recData.tags) {
-    tagsArray = recData.tags
-      .match(/"([^"]*)"/g)
-      .map((tag: string) => tag.replace(/"/g, ""));
-  }
   //원래 시간으로 돌려주는 함수
   function formatPublishedAt(publishedAt: any) {
     const date = new Date(publishedAt);
@@ -49,62 +47,55 @@ export default function Page() {
     }).format(number);
   }
   //클립 버튼 눌렀을 때 복사되는거
-  const getUrl = (e: any) => {
+  const getUrl = (e: MouseEvent) => {
     console.log("링크는", e);
   };
-
   useEffect(() => {
-    let channelCommentCount;
-    let channelViewCount;
-    try {
-      axios
-        .post("http://localhost:8000/getCount", { id: recData.id })
-        .then((res) => {
-          console.log("res값!!!!", res.data[0]);
-          channelCommentCount = res.data[0].channelCommentCount;
-          channelViewCount = res.data[0].channelViewCount;
-          setChannelCommentCount(channelCommentCount);
-          setChannelViewCount(channelViewCount);
+    // statistics받아옵시다
+    getStatistics(recData.id.videoId).then((res) => {
+      setCommentCount(res.items[0].statistics.commentCount);
+      setViewCount(res.items[0].statistics.viewCount);
+      setLikeCount(res.items[0].statistics.likeCount);
+    });
+
+    fetchComments(recData.id.videoId, 10, "")
+      .then((res) => {
+        const newComments = res.items.map((ment: any) => {
+          return {
+            authorName: ment.snippet.topLevelComment.snippet.authorDisplayName,
+            text: ment.snippet.topLevelComment.snippet.textOriginal,
+            like: ment.snippet.topLevelComment.snippet.likeCount,
+            time: formatPublishedAt(
+              ment.snippet.topLevelComment.snippet.publishedAt
+            ),
+            imgUrl: ment.snippet.topLevelComment.snippet.authorProfileImageUrl,
+          };
         });
-      axios
-        .post("http://localhost:8000/getComments", { id: recData.id })
-        .then((res) => {
-          console.log("받아온 값은?", res);
-          const newComments = res.data.map((ment: any) => {
-            return {
-              authorName: ment.authorName,
-              text: ment.textOriginal,
-              like: ment.likeCount,
-              time: formatPublishedAt(ment.publishedAt),
-              imgUrl: ment.authorProfileImageUrl,
-            };
-          });
-          setComment(newComments);
-        });
-    } catch (error) {
-      console.error("댓글 불러오기 오류");
-    }
+        setComment(newComments);
+      })
+      .catch((error) => {
+        console.log("에러", error);
+      });
   }, []);
 
   return (
     <>
       <header>
         <h3 className="headTitle">
-          {/* <span>[{recData.categoryId}]</span> */}
-          <span className="chaennelTitle">{recData.title}</span>
+          {/* <span>[{recData.snippet.categoryId}]</span> */}
+          <span className="chaennelTitle">{recData.snippet.title}</span>
         </h3>
       </header>
       <section>
+        {/* <h2>{recData.snippet.localized.description}</h2> */}
         <div className="profile_info">
-          <span className="channelName">{recData.channelTitle}</span>
-          <span className="channelComments">
-            댓글 : {channelCommentCount}개{" "}
-          </span>
+          <span className="channelName">{recData.snippet.channelTitle}</span>
+          <span className="channelComments">댓글 : {commentCount}개 </span>
           <span className="channelViews">
-            조회수 : {formatNumber(channelViewCount)}{" "}
+            조회수 : {formatNumber(viewCount)}{" "}
           </span>
           <span className="channelUploadDate">
-            {formatPublishedAt(recData.publishedAt)}
+            {formatPublishedAt(recData.snippet.publishedAt)}
           </span>
         </div>
       </section>
@@ -113,19 +104,19 @@ export default function Page() {
           <iframe
             className="goVideo"
             title={`recData.snippet.channelTitle`}
-            src={`https://www.youtube.com/embed/${recData.id}`}
+            src={`https://www.youtube.com/embed/${recData.id.videoId}`}
           ></iframe>
         </div>
         <div className="moreInfo">
           <a
-            href={`https://www.youtube.com/watch?v=${recData.id}`}
+            href={`https://www.youtube.com/watch?v=${recData.id.videoId}`}
             className="btn youtubeBtn"
           >
             유튜브에서 보기
           </a>
           <a
             className="btn youtubeInfo"
-            href={`https://www.youtube.com/channel/${recData.channelId}`}
+            href={`https://www.youtube.com/channel/${recData.snippet.channelId}`}
           >
             유튜브 채널 정보
           </a>
@@ -139,20 +130,11 @@ export default function Page() {
           <span className="btn youtubeChannelClip">채널 스크랩</span>
         </div>
         <ClipIcons />
-        <div className="youtubeDescription">
-          {recData.description.split("\\n").map((line: String) => {
-            return (
-              <>
-                {line}
-                <br />
-              </>
-            );
-          })}
-        </div>
+        <div className="youtubeDescription">{recData.snippet.description}</div>
         <br />
         <div className="hashTags">
-          {recData.tags
-            ? tagsArray.map((res: any) => (
+          {recData.snippet.tags
+            ? recData.snippet.tags.map((res: any) => (
                 <span className="tags btn" id={res}>
                   #{res}
                 </span>
@@ -162,8 +144,7 @@ export default function Page() {
         <div className="vote">
           <span className="positiveBtn">
             <BsFillHandThumbsUpFill />
-            추천
-            <strong>0</strong>
+            추천 <strong>{likeCount}</strong>
           </span>
           <span className="negativeBtn">
             <BsFillHandThumbsDownFill />
@@ -219,7 +200,7 @@ export default function Page() {
                 <span className="ClipUrl">{`https://www.youtube.com/watch?v=${recData.id}`}</span>
 
                 <CopyToClipboard
-                  text={`https://www.youtube.com/watch?v=${recData.id}`}
+                  text={`https://www.youtube.com/watch?v=${recData.id.videoId}`}
                   onCopy={() => alert("클립보드에 복사되었습니다.")}
                 >
                   <button
