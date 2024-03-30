@@ -162,8 +162,7 @@ export default function Page() {
         <div className="vote">
           <span className="positiveBtn">
             <BsFillHandThumbsUpFill />
-            추천
-            <strong>0</strong>
+            추천 <strong>{recData.likeCount}</strong>
           </span>
           <span className="negativeBtn">
             <BsFillHandThumbsDownFill />
