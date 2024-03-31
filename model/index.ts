@@ -1,5 +1,8 @@
 import { createPool } from "mysql2/promise";
 import { fetchComments } from "../src/func/GetApi";
+import bcrypt from "bcrypt";
+
+const salt = 10;
 
 const conn = createPool({
   host: "localhost",
@@ -140,9 +143,11 @@ async function checkUserEmail(email: String) {
 }
 async function userSignup(data: any) {
   try {
+    // 비밀번호 암호화 시키기
+    const hash = bcrypt.hashSync(data.userPw, salt);
     const [rows, _] = await conn.query(
-      "INSERT INTO userinfo (userEmail, userName, userPw) VALUES (?,?,?)",
-      [data.userEmail, data.userName, data.userPw]
+      "INSERT INTO userinfo (userEmail, userName, userPw, social) VALUES (?,?,?,?)",
+      [data.userEmail, data.userName, hash, "homepage"]
     );
     return rows;
   } catch (error) {
@@ -159,8 +164,8 @@ async function kakao(data: any) {
     if (rows.length === 0) {
       // 가입 안되어 있으면 가입 시킴
       await conn.query(
-        "INSERT INTO userinfo (userEmail, userName, userPw) VALUES(?, ?, ?)",
-        [data.id, data.kakao_account.profile.nickname, "kakaoLogin"]
+        "INSERT INTO userinfo (userEmail, userName, userPw) VALUES(?, ?, ?, ?)",
+        [data.id, data.kakao_account.profile.nickname, "kakaoLogin", "kakao"]
       );
       console.log("가입완료");
     } else {
@@ -175,10 +180,16 @@ async function kakao(data: any) {
 async function login(data: any) {
   try {
     const [rows, _]: any = await conn.query(
-      "SELECT userEmail, userName FROM userinfo where (userEmail, userPw) = (?, ?)",
-      [data.userId, data.userPw]
+      "SELECT userEmail, userName, userPw FROM userinfo where (userEmail) = (?)",
+      [data.userId]
     );
-    return rows;
+    const match = await bcrypt.compare(data.userPw, rows[0].userPw);
+    if (match) {
+      data = { userEmail: rows[0].userEmail, userName: rows[0].userName };
+      return data;
+    } else {
+      return "fail";
+    }
   } catch (error) {
     console.log("로그인 오류", error);
   }

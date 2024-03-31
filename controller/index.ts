@@ -133,20 +133,22 @@ const kakao = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   try {
     const result = await Model.login(req.body);
-    if (result.length === 0) {
+    if (result.length === 0 || result === "fail") {
       res.send("fail");
     } else {
       const user = {
-        id: result[0].userEmail,
-        username: result[0].userName,
+        id: result.userEmail,
+        username: result.userName,
       };
       const secretKey = "secret"; // 비밀키
       const expiresIn = "2h"; // 만료시간
       const token = jwt.sign(user, secretKey, { expiresIn });
-      res.send(token);
+      const data = { token: token, user: user };
+      res.send(data);
     }
   } catch (error) {
     console.log("controller 로그인 오류", error);
+    res.send("fail");
   }
 };
 

@@ -4,6 +4,7 @@ const categoryState = {
   category: 0,
 };
 
+// 카테고리
 const myCategoryState = createSlice({
   name: "category",
   initialState: categoryState,
@@ -24,7 +25,9 @@ const myCategoryState = createSlice({
 });
 
 const store = configureStore({
-  reducer: { category: myCategoryState.reducer },
+  reducer: {
+    category: myCategoryState.reducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

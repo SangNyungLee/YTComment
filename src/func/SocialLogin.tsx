@@ -2,6 +2,7 @@ import React from "react";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
 import { getCookie } from "./GetApi";
+import "../css/KakaoButton.css";
 const SocialKaKao = () => {
   // const kakaoClientId = process.env.JAVASCRIPT_KEY!;
   const kakaoClientId = "9637f98e72d543af39527ee6b7855c7c";
@@ -11,7 +12,7 @@ const SocialKaKao = () => {
     const result = await axios.post("http://localhost:8000/auth/kakao", {
       Token: idToken,
     });
-    getCookie(result);
+    getCookie("key", result);
     // const token = result.data;
     // // 만료날짜 설정
     // const expires = new Date();
@@ -27,6 +28,8 @@ const SocialKaKao = () => {
   return (
     <>
       <KakaoLogin
+        className="kakao-login-button"
+        style={{ lineHeight: "40px" }}
         token={kakaoClientId}
         onSuccess={kakaoOnSuccess}
         onFail={kakaoOnFailure}

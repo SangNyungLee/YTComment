@@ -81,14 +81,18 @@ function truncateText(text: string) {
     return sliceText;
   }
 }
-function getCookie(data: any) {
-  const token = data.data;
+function getCookie(key: string, data: any) {
+  const token = data;
   // 만료날짜 설정
   const expires = new Date();
   expires.setTime(expires.getTime() + 2 * 60 * 60 * 1000);
   // 쿠키 설정 (path 설정 = 쿠키가 적용되는 경로지정)
-  document.cookie = `token = ${token}; expires=${expires.toUTCString()} path=/`;
+  document.cookie = `${key} = ${token}; expires=${expires.toUTCString()} path=/`;
   window.location.href = "/";
+}
+function deleteCookie() {
+  document.cookie =
+    "token" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 export {
   fetchComments,
@@ -96,4 +100,5 @@ export {
   searchYoutubeVideos,
   getCookie,
   getStatistics,
+  deleteCookie,
 };

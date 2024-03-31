@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/LsideStyle.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AccordionFlush from "./Accordion";
 import { GoCommentDiscussion } from "react-icons/go";
 import { BsFillBarChartLineFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { deleteCookie } from "./func/GetApi";
+import { useSelector } from "react-redux";
 export default function Lside() {
   const [isExpanded, setIsExpanded] = useState(false);
   const cookieString = document.cookie;
-
+  const userName = sessionStorage.getItem("userName");
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
+  };
+  const logout = () => {
+    deleteCookie();
+    sessionStorage.removeItem("userName");
+    window.location.replace("/");
   };
 
   return (
@@ -23,8 +30,8 @@ export default function Lside() {
       </div>
       {cookieString ? (
         <div>
-          <div>??? 님 환영합니다.~</div>
-          <button>로그아웃하기</button>
+          <div>{userName} 님 환영합니다.~</div>
+          <button onClick={logout}>로그아웃하기</button>
         </div>
       ) : (
         <div>

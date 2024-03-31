@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./css/Signup.css";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import {
   FacebookLoginButton,
   GithubLoginButton,
@@ -11,21 +12,22 @@ import SocialKaKao from "./func/SocialLogin";
 import { getCookie } from "./func/GetApi";
 
 function Signup() {
-  const [userId, SetUserId] = useState("");
+  const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
-
+  const dispatch = useDispatch();
   const getLogin = async () => {
     const result: any = await axios.post("http://localhost:8000/login", {
       userId,
       userPw,
     });
-    if (result === "fail") {
+    if (result.data === "fail") {
       alert("아이디와 비밀번호를 확인해주세요");
-      SetUserId("");
+      setUserId("");
       setUserPw("");
     } else {
+      getCookie("token", result.data.token);
+      sessionStorage.setItem("userName", result.data.user.username);
       alert("로그인에 성공하셨습니다.!");
-      getCookie(result);
     }
   };
   return (
@@ -44,14 +46,16 @@ function Signup() {
           <form className="formTag">
             <input
               type="text"
+              value={userId}
               className={userId}
               placeholder="아이디"
               onChange={(e) => {
-                SetUserId(e.target.value);
+                setUserId(e.target.value);
               }}
             />
             <input
               type="text"
+              value={userPw}
               className={userPw}
               placeholder="비밀번호"
               onChange={(e) => {
@@ -88,11 +92,10 @@ function Signup() {
           <span>자동로그인</span>
         </div>
         <div className="socialLogin">
-          <span className="loginSNS">SNS 계정으로 로그인</span>
-          <FacebookLoginButton className="fbButton" />
-          <GoogleLoginButton />
-          <GithubLoginButton />
+          <div className="loginSNS">SNS 계정으로 로그인</div>
           <SocialKaKao />
+          {/* <GoogleLoginButton /> */}
+          {/* <GithubLoginButton /> */}
         </div>
       </div>
     </div>

@@ -1,0 +1,11 @@
+.kakao-login-button {
+  background-color: #ffeb00;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 40px;
+  width: 20rem;
+}
