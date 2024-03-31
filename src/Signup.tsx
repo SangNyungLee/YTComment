@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import "./css/Signup.css";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import {
-  FacebookLoginButton,
   GithubLoginButton,
   GoogleLoginButton,
 } from "react-social-login-buttons";
@@ -14,7 +12,6 @@ import { getCookie } from "./func/GetApi";
 function Signup() {
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
-  const dispatch = useDispatch();
   const getLogin = async () => {
     const result: any = await axios.post("http://localhost:8000/login", {
       userId,
@@ -30,6 +27,11 @@ function Signup() {
       alert("로그인에 성공하셨습니다.!");
     }
   };
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      getLogin();
+    }
+  };
   return (
     <div className="mom">
       <div className="login">
@@ -43,7 +45,7 @@ function Signup() {
           <h1 style={{ color: "#4d627b", fontSize: "2em" }}>로그인</h1>
         </div>
         <div className="loginForm">
-          <form className="formTag">
+          <div className="formTag">
             <input
               type="text"
               value={userId}
@@ -61,6 +63,7 @@ function Signup() {
               onChange={(e) => {
                 setUserPw(e.target.value);
               }}
+              onKeyDown={handleKeyPress}
             />
             <button
               type="button"
@@ -85,11 +88,11 @@ function Signup() {
                 회원가입
               </button>
             </Link>
-          </form>
+          </div>
         </div>
-        <div className="dddd" style={{}}>
-          <input type="checkBox" style={{ marginRight: "10px" }} />
-          <span>자동로그인</span>
+        <div className="dddd">
+          {/* <input type="checkBox" style={{ marginRight: "10px" }} />
+          <span>자동로그인</span> */}
         </div>
         <div className="socialLogin">
           <div className="loginSNS">SNS 계정으로 로그인</div>
