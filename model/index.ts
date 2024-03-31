@@ -1,14 +1,15 @@
 import { createPool } from "mysql2/promise";
 import { fetchComments } from "../src/func/GetApi";
 import bcrypt from "bcrypt";
-
+import dotenv from "dotenv";
+dotenv.config();
 const salt = 10;
 
 const conn = createPool({
-  host: "localhost",
-  user: "test",
-  password: "1234",
-  database: "ytcomment",
+  host: process.env.REACT_APP_RDS_HOST,
+  user: "admin",
+  password: process.env.REACT_APP_RDS_PW,
+  database: "YTComment",
 });
 
 async function testQuery() {

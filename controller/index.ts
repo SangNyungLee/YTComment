@@ -24,54 +24,55 @@ const test = async (req: Request, res: Response) => {
 };
 
 // 매일 자정에 schedule 실행
-// const getVideos = async () => {
-//   const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서임
-//   for (const data of category) {
-//     try {
-//       const result = await axios.get(
-//         "https://www.googleapis.com/youtube/v3/videos",
-//         {
-//           params: {
-//             key: apiKey,
-//             part: "snippet, statistics",
-//             chart: "mostPopular",
-//             maxResults: 50,
-//             videoCategoryId: data,
-//             regionCode: "KR",
-//           },
-//         }
-//       );
-//       if (result.data && result.data.items) {
-//         await Model.saveVideos(result.data.items);
-//         await Model.saveComments(result.data.items);
-//       }
-//       console.log("Success");
-//     } catch (error) {
-//       console.error("에러입니다.", error);
-//     }
-//   }
-// };
+const getVideos = async (req: Request, res: Response) => {
+  const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서
+  try {
+    for (const data of category) {
+      const result = await axios.get(
+        "https://www.googleapis.com/youtube/v3/videos",
+        {
+          params: {
+            key: process.env.REACT_APP_APIKEY,
+            part: "snippet, statistics",
+            chart: "mostPopular",
+            maxResults: 50,
+            videoCategoryId: data,
+            regionCode: "KR",
+          },
+        }
+      );
+      if (result.data && result.data.items) {
+        await Model.saveVideos(result.data.items);
+        await Model.saveComments(result.data.items);
+      }
+    }
+    res.send("Success");
+  } catch (error) {
+    console.error("에러입니다.", error);
+    res.status(500).send("서버 오류 발생");
+  }
+};
 
 cron.schedule(
   "0 0 * * * *",
   async () => {
-    await getVideos();
-    console.log("매일 자정에 동영상 데이터 수집 완료");
+    await getVideos2();
+    console.log("동영상 저장완료");
   },
   {
     timezone: "Asia/Seoul",
   }
 );
 
-const getVideos = async () => {
-  const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서임
+const getVideos2 = async () => {
+  const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서
   for (const data of category) {
     try {
       const result = await axios.get(
         "https://www.googleapis.com/youtube/v3/videos",
         {
           params: {
-            key: apiKey,
+            key: process.env.REACT_APP_APIKEY,
             part: "snippet, statistics",
             chart: "mostPopular",
             maxResults: 50,
@@ -86,6 +87,7 @@ const getVideos = async () => {
       }
       console.log("DB저장 완료");
     } catch (error) {
+      console.log(apiKey);
       console.log("에러입니다.");
     }
   }
@@ -206,6 +208,7 @@ export default {
   main,
   test,
   getVideos,
+  getVideos2,
   trend,
   getComments,
   getCount,
