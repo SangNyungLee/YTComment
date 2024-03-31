@@ -62,10 +62,6 @@ li {
   transition: all 0.25s;
   border: 1px;
 }
-.autoLogin {
-}
-.signup {
-}
 .autoSign {
   margin-top: 10px;
   margin-bottom: 10px;

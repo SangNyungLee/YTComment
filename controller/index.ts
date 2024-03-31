@@ -3,7 +3,8 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { fetchComments } from "../src/func/GetApi";
 import jwt from "jsonwebtoken";
-const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
+import cron from "node-cron";
+const apiKey = process.env.REACT_APP_APIKEY;
 const main = async (req: Request, res: Response) => {
   try {
     await Model.conn.query("SELECT 1");
@@ -22,7 +23,47 @@ const test = async (req: Request, res: Response) => {
   }
 };
 
-const getVideos = async (req: Request, res: Response) => {
+// 매일 자정에 schedule 실행
+// const getVideos = async () => {
+//   const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서임
+//   for (const data of category) {
+//     try {
+//       const result = await axios.get(
+//         "https://www.googleapis.com/youtube/v3/videos",
+//         {
+//           params: {
+//             key: apiKey,
+//             part: "snippet, statistics",
+//             chart: "mostPopular",
+//             maxResults: 50,
+//             videoCategoryId: data,
+//             regionCode: "KR",
+//           },
+//         }
+//       );
+//       if (result.data && result.data.items) {
+//         await Model.saveVideos(result.data.items);
+//         await Model.saveComments(result.data.items);
+//       }
+//       console.log("Success");
+//     } catch (error) {
+//       console.error("에러입니다.", error);
+//     }
+//   }
+// };
+
+cron.schedule(
+  "0 0 * * * *",
+  async () => {
+    await getVideos();
+    console.log("매일 자정에 동영상 데이터 수집 완료");
+  },
+  {
+    timezone: "Asia/Seoul",
+  }
+);
+
+const getVideos = async () => {
   const category = [0, 10, 20, 15]; // 최신, 음악, 게임, 동물 순서임
   for (const data of category) {
     try {
@@ -43,9 +84,9 @@ const getVideos = async (req: Request, res: Response) => {
         await Model.saveVideos(result.data.items);
         await Model.saveComments(result.data.items);
       }
-      res.send("Success");
+      console.log("DB저장 완료");
     } catch (error) {
-      console.error("에러입니다.", error);
+      console.log("에러입니다.");
     }
   }
 };
@@ -125,7 +166,8 @@ const kakao = async (req: Request, res: Response) => {
     const secretKey = "secret"; // 비밀키
     const expiresIn = "2h"; // 만료시간
     const token = jwt.sign(user, secretKey, { expiresIn });
-    res.send(token);
+    const data = { token: token, user: user };
+    res.send(data);
   } catch (error) {
     console.log("error", error);
   }

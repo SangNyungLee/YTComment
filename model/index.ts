@@ -24,6 +24,10 @@ async function testQuery() {
 async function saveComments(data: any) {
   for (const item of data) {
     const commentInfo = await fetchComments(item.id, 10, "");
+    if (!commentInfo || !commentInfo.items) {
+      console.log("댓글없음");
+      continue;
+    }
     for (const comment of commentInfo.items) {
       const comments = comment.snippet.topLevelComment.snippet;
       await conn.query(
@@ -164,12 +168,12 @@ async function kakao(data: any) {
     if (rows.length === 0) {
       // 가입 안되어 있으면 가입 시킴
       await conn.query(
-        "INSERT INTO userinfo (userEmail, userName, userPw) VALUES(?, ?, ?, ?)",
+        "INSERT INTO userinfo (userEmail, userName, userPw, social) VALUES(?, ?, ?, ?)",
         [data.id, data.kakao_account.profile.nickname, "kakaoLogin", "kakao"]
       );
       console.log("가입완료");
     } else {
-      console.log("이미가입");
+      console.log("이미 가입된 유저");
     }
   } catch (error) {
     console.log("카카오 로그인 오류", error);

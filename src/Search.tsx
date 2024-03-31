@@ -15,7 +15,6 @@ import {
 import { RootState } from "./store";
 //API키
 export default function Search() {
-  const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
   const [videos, setVideos] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [pageToken, setPageToken] = useState("");

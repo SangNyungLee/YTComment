@@ -16,7 +16,7 @@ function AccordionFlush() {
           <li>MY 영상 스크랩</li>
         </Accordion.Body>
       </Accordion.Item>
-
+      {/* 
       <Accordion.Item eventKey="1">
         <Accordion.Header>
           <BsSearch className="accordionIcon" />
@@ -29,7 +29,7 @@ function AccordionFlush() {
             <li>3번</li>
           </ul>
         </Accordion.Body>
-      </Accordion.Item>
+      </Accordion.Item> */}
 
       <Accordion.Item eventKey="2">
         <Accordion.Header>

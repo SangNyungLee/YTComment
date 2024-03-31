@@ -94,10 +94,9 @@ export default function Lside() {
                   to={"/signup"}
                   style={{ color: "white", textDecoration: "none" }}
                 >
-                  회원가입
+                  회원가입 / SNS가입
                 </Link>
-              </span>{" "}
-              / SNS가입
+              </span>
             </span>
           </div>
         </div>

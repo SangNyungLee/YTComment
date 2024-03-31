@@ -1,6 +1,6 @@
 import axios from "axios";
 // import jwt from "jsonwebtoken";
-const apiKey = "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U";
+const apiKey = process.env.REACT_APP_APIKEY;
 //댓글 가져오기
 const fetchComments = async (
   videoId: string,
@@ -23,7 +23,7 @@ const fetchComments = async (
     );
     return res.data;
   } catch (error) {
-    console.log("댓글오류", error);
+    console.log("댓글오류");
     return null;
   }
 };
