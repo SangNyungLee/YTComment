@@ -1,7 +1,7 @@
 import { createPool } from "mysql2/promise";
-import { fetchComments } from "../../src/func/GetApi";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
 const salt = 10;
 
@@ -11,7 +11,32 @@ const conn = createPool({
   password: process.env.REACT_APP_RDS_PW,
   database: "YTComment",
 });
-
+//댓글 가져오기
+const fetchComments = async (
+  videoId: string,
+  commentNumber: number,
+  token: string
+) => {
+  try {
+    const res = await axios.get(
+      "https://www.googleapis.com/youtube/v3/commentThreads",
+      {
+        params: {
+          key: process.env.REACT_APP_APIKEY,
+          part: "snippet,replies",
+          videoId: videoId,
+          maxResults: commentNumber,
+          order: "relevance",
+          pageToken: token,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.log("댓글오류");
+    return null;
+  }
+};
 // 댓글 db에 저장
 async function saveComments(data: any) {
   for (const item of data) {

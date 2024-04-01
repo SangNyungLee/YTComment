@@ -3,6 +3,8 @@ import axios from "axios";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import cron from "node-cron";
+import dotenv from "dotenv";
+dotenv.config();
 const apiKey = process.env.REACT_APP_APIKEY;
 
 // 매일 자정에 schedule 실행
