@@ -6,11 +6,12 @@ dotenv.config();
 const salt = 10;
 
 const conn = createPool({
-  host: process.env.REACT_APP_RDS_HOST,
+  host: "localhost",
   user: "admin",
-  password: process.env.REACT_APP_RDS_PW,
-  database: "YTComment",
+  password: "1234",
+  database: "ytcomment",
 });
+
 //댓글 가져오기
 const fetchComments = async (
   videoId: string,
@@ -23,7 +24,7 @@ const fetchComments = async (
       {
         params: {
           key: process.env.REACT_APP_APIKEY,
-          part: "snippet,replies",
+          part: "snippet",
           videoId: videoId,
           maxResults: commentNumber,
           order: "relevance",
@@ -47,6 +48,11 @@ async function saveComments(data: any) {
     }
     for (const comment of commentInfo.items) {
       const comments = comment.snippet.topLevelComment.snippet;
+
+      const formattedPublishedAt = comments.publishedAt
+        .replace("T", " ")
+        .replace("Z", "");
+
       await conn.query(
         `INSERT INTO comment(videoId, likeCount, textOriginal, authorName, authorProfileImageUrl, publishedAt)
       VALUES (?, ?, ?, ?, ?, ?)`,
@@ -56,7 +62,7 @@ async function saveComments(data: any) {
           comments.textOriginal,
           comments.authorDisplayName,
           comments.authorProfileImageUrl,
-          comments.publishedAt,
+          formattedPublishedAt,
         ]
       );
     }

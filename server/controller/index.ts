@@ -56,8 +56,8 @@ const getVideos2 = async () => {
         "https://www.googleapis.com/youtube/v3/videos",
         {
           params: {
-            key: process.env.REACT_APP_APIKEY,
-            part: "snippet, statistics",
+            key: "AIzaSyBrSPFESYjexkwyDYm99UyIPhBXWtcxK4U",
+            part: "snippet,statistics",
             chart: "mostPopular",
             maxResults: 50,
             videoCategoryId: data,

@@ -11,7 +11,7 @@ const fetchComments = async (
       {
         params: {
           key: process.env.REACT_APP_APIKEY,
-          part: "snippet,replies",
+          part: "snippet",
           videoId: videoId,
           maxResults: commentNumber,
           order: "relevance",

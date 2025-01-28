@@ -27,7 +27,9 @@ export default function Page() {
   const [comment, setComment] = useState([]);
 
   let tagsArray = [];
-  if (recData.tags) {
+  if (Array.isArray(recData.tags)) {
+    tagsArray = recData.tags;
+  } else if (typeof recData.tags === "string") {
     tagsArray = recData.tags
       .match(/"([^"]*)"/g)
       .map((tag: string) => tag.replace(/"/g, ""));
@@ -183,7 +185,7 @@ export default function Page() {
               <div className="commentDiv">
                 <img src={`${res.imgUrl}`} className="commentImg" />
                 <div>
-                  <span>@{res.authorName}</span> <span>{res.time}</span>
+                  <span>{res.authorName}</span> <span>{res.time}</span>
                   <br />
                   <span>{res.text}</span>
                   <br />
