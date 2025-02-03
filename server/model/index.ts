@@ -7,7 +7,7 @@ const salt = 10;
 
 const conn = createPool({
   host: "localhost",
-  user: "admin",
+  user: "root",
   password: "1234",
   database: "ytcomment",
 });
