@@ -80,14 +80,14 @@ export default function Main() {
       {/* <h1>인기동영상</h1> */}
       <Row className="justify-content-center" style={{ width: "100%" }}>
         {videos.map((video: any) => (
-          <Col xs={7} sm={7} md={5} lg={4} xl={3} xxl={2} key={video.id}>
+          <Col xs={7} sm={7} md={5} lg={4} xl={3} xxl={2} key={video.videoId}>
             <Card style={{ width: "100%", marginBottom: "20px" }}>
-              {selectedVideo === video.id ? (
+              {selectedVideo === video.videoId ? (
                 <iframe
-                  id={`${video.id}`}
+                  id={`${video.videoId}`}
                   width="100%"
                   height="250px"
-                  src={`https://www.youtube.com/embed/${video.id}`}
+                  src={`https://www.youtube.com/embed/${video.videoId}`}
                   frameBorder="0"
                   allowFullScreen
                   title="YouTube Video"
@@ -97,7 +97,7 @@ export default function Main() {
                   <Card.Img
                     variant="top"
                     src={video.thumbnails}
-                    onClick={() => setSelectedVideo(video.id)}
+                    onClick={() => setSelectedVideo(video.videoId)}
                   />
                 </>
               )}

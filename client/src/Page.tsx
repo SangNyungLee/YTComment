@@ -60,16 +60,15 @@ export default function Page() {
     let channelViewCount;
     try {
       axios
-        .post("http://localhost:8000/api/getCount", { id: recData.id })
+        .post("http://localhost:8000/api/getCount", { id: recData.videoId })
         .then((res) => {
-          console.log("res값!!!!", res.data[0]);
           channelCommentCount = res.data[0].channelCommentCount;
           channelViewCount = res.data[0].channelViewCount;
           setChannelCommentCount(channelCommentCount);
           setChannelViewCount(channelViewCount);
         });
       axios
-        .post("http://localhost:8000/api/getComments", { id: recData.id })
+        .post("http://localhost:8000/api/getComments", { id: recData.videoId })
         .then((res) => {
           console.log("받아온 값은?", res);
           const newComments = res.data.map((ment: any) => {
@@ -115,12 +114,12 @@ export default function Page() {
           <iframe
             className="goVideo"
             title={`recData.snippet.channelTitle`}
-            src={`https://www.youtube.com/embed/${recData.id}`}
+            src={`https://www.youtube.com/embed/${recData.videoId}`}
           ></iframe>
         </div>
         <div className="moreInfo">
           <a
-            href={`https://www.youtube.com/watch?v=${recData.id}`}
+            href={`https://www.youtube.com/watch?v=${recData.videoId}`}
             className="btn youtubeBtn"
           >
             유튜브에서 보기
@@ -217,10 +216,10 @@ export default function Page() {
             </Modal.Body>
             <Modal.Footer style={{ justifyContent: "center" }}>
               <span style={{ border: "2px solid #ddd", padding: "5px" }}>
-                <span className="ClipUrl">{`https://www.youtube.com/watch?v=${recData.id}`}</span>
+                <span className="ClipUrl">{`https://www.youtube.com/watch?v=${recData.videoId}`}</span>
 
                 <CopyToClipboard
-                  text={`https://www.youtube.com/watch?v=${recData.id}`}
+                  text={`https://www.youtube.com/watch?v=${recData.videoId}`}
                   onCopy={() => alert("클립보드에 복사되었습니다.")}
                 >
                   <button
